@@ -1,8 +1,18 @@
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 from ollama import chat
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Update this to restrict origins as needed
+    allow_credentials=True,
+    allow_methods=["*"],  # You can restrict this to specific HTTP methods
+    allow_headers=["*"],  # You can restrict this to specific headers
+)
 
 class ChatRequest(BaseModel):
     query: str
