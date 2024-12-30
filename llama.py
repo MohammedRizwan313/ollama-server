@@ -24,7 +24,7 @@ class ChatResponseModel(BaseModel):
 async def chat_with_model(request: ChatRequest):
     try:
         # Interact with the ollama chat model
-        response = chat(model='llama3.1', messages=[
+        response = chat(model='llama3.2-vision', messages=[
             {
                 'role': 'user',
                 'content': request.query,
