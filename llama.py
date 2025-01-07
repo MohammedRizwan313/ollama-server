@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from ollama import chat
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,14 +8,15 @@ app = FastAPI()
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Update this to restrict origins as needed
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # You can restrict this to specific HTTP methods
-    allow_headers=["*"],  # You can restrict this to specific headers
+    allow_methods=["*"],
+    allow_headers=["*"],  
 )
 
 class ChatRequest(BaseModel):
     query: str
+    temperature: float = 0.7
 
 class ChatResponseModel(BaseModel):
     response: str
@@ -24,12 +25,18 @@ class ChatResponseModel(BaseModel):
 async def chat_with_model(request: ChatRequest):
     try:
         # Interact with the ollama chat model
-        response = chat(model='llama3.2-vision', messages=[
-            {
-                'role': 'user',
-                'content': request.query,
-            },
-        ])
+        response = chat(
+            model='llama3.2-vision',
+            messages=[
+                {
+                    'role': 'user',
+                    'content': request.query,
+                },
+            ],
+            options={
+                'temperature': request.temperature
+            }
+        )
 
         # Return the response content
         return {"response": response['message']['content']}
